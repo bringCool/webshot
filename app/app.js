@@ -5,7 +5,7 @@ const sharp = require('sharp');
 const app = express();
 
 const port = process.env.PORT || 3000;
-const token = process.env.TOKEN + '';
+const token = process.env.TOKEN || 'token';
 
 app.get('/' + token + '/:wait/:trim/:device/*', async (req, res) => {
     const hexColor = /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
