@@ -12,14 +12,13 @@ const server = http.createServer(async (req, res) => {
     if (paths[0] === token && paths.length > 4) {
         const hexColor = /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
         try {
-            const args = {
+            // 截取屏幕
+            const image = await screenshot({
                 waitFor: paths[1] > 0 ? +paths[1] : 0,
                 trimColor: hexColor.test(paths[2]) ? paths[2] : '',
-                deviceInfo: devices[paths[3]] || devices['Desktop'],
+                deviceInfo: devices[decodeURI(paths[3])] || devices['Desktop Chrome'],
                 targetUrl: paths.slice(4).join('/') + (url.search || ''),
-            };
-            // 截取屏幕
-            const image = await screenshot(args);
+            });
             // 输出图片
             res.writeHead(200, {
                 'Content-Type': 'image/png',
