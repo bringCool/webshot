@@ -1,13 +1,15 @@
 {
     "name": "webshot-api",
     "version": "1.0.0",
+    "type": "module",
     "description": "Playwright Webshot API",
     "main": "app.js",
     "scripts": {
-        "start": "node app.js"
+        "start": "node app.js",
+        "test": "node --test test/*.test.js"
     },
     "dependencies": {
-        "sharp": "^0.34.1",
-        "playwright": "^1.52.0"
+        "sharp": "^0.34.5",
+        "playwright": "^1.58.1"
     }
 }
