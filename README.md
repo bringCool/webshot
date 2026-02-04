@@ -73,6 +73,8 @@ curl -X POST http://your-ip:3000/your-token \
 
 ## 设备类型
 
+[Playwright Devices](https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json)
+
 ### 移动设备
 
 * iPhone 6/7/8/SE/X/XR/11/12/13/14/15 系列
@@ -85,8 +87,6 @@ curl -X POST http://your-ip:3000/your-token \
 * Desktop Chrome（默认）
 * Desktop Edge / Firefox / Safari
 * Desktop Chrome/Edge/Firefox HiDPI
-
-完整列表: [Playwright Devices](https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json)
 
 ## 配置
 
