@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页截图 API - 调试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            background: #f8f9fa;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #e9ecef;
+        }
+
+        .header {
+            background: #212529;
+            color: #fff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #343a40;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #212529;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #212529;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #495057;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: border-color 0.15s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23343a40' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #212529;
+        }
+
+        .form-group textarea {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        button {
+            background: #212529;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.15s;
+        }
+
+        button:hover {
+            background: #343a40;
+        }
+
+        button:active {
+            background: #495057;
+        }
+
+        .result {
+            margin-top: 25px;
+            display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result img {
+            max-width: 100%;
+            border: 1px solid #ced4da;
+            display: block;
+        }
+
+        .api-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 15px;
+            font-size: 13px;
+        }
+
+        .api-info code {
+            background: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 12px;
+        }
+
+        .api-info pre {
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 8px;
+            font-size: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #e9ecef;
+            border-top: 3px solid #212529;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 12px 15px;
+            border-radius: 4px;
+            color: #721c24;
+            font-size: 13px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #28a745;
+            color: #fff;
+            font-size: 11px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>网页截图 API <span class="status">调试</span></h1>
+        </div>
+        <div class="content">
+            <div class="section">
+                <h2>鉴权配置</h2>
+                <div class="form-group">
+                    <label for="token">API Token</label>
+                    <input type="text" id="token" name="token" placeholder="请输入 API Token">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>截图参数</h2>
+                <form id="screenshotForm">
+                    <div class="form-group">
+                        <label for="url">网页 URL</label>
+                        <input type="url" id="url" name="url" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="html">或 HTML 内容</label>
+                        <textarea id="html" name="html" placeholder="<h1>Hello</h1><p>World</p>"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="waitFor">等待策略</label>
+                            <select id="waitFor" name="waitFor">
+                                <option value="0">0 - load 事件</option>
+                                <option value="1">1 - domcontentloaded 事件</option>
+                                <option value="2">2 - networkidle0</option>
+                                <option value="3000">>2 - 毫秒数</option>
+                            </select>
+                        </div>
+                        <div class="col form-group">
+                            <label for="device">设备类型</label>
+                            <select id="device" name="device">
+                                <option value="Desktop Chrome">Desktop Chrome</option>
+                                <option value="iPhone 14 Pro">iPhone 14 Pro</option>
+                                <option value="iPad Pro 11">iPad Pro 11</option>
+                                <option value="Desktop Edge">Desktop Edge</option>
+                                <option value="Desktop Firefox">Desktop Firefox</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trimColor">去除背景色（十六进制，如 ffffff）</label>
+                        <input type="text" id="trimColor" name="trimColor" placeholder="ffffff">
+                    </div>
+                    <button type="submit">生成截图</button>
+                </form>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在生成截图，请稍候...</p>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+                <h2 style="color: #212529; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase;">截图结果</h2>
+                <img id="screenshot" alt="截图">
+            </div>
+
+            <div class="section">
+                <h2>API 文档</h2>
+                <div class="api-info">
+                    <p><strong>请求地址：</strong> <code id="apiUrl">POST http://HOST/TOKEN</code></p>
+                    <p style="margin-top: 12px;"><strong>cURL 示例：</strong></p>
+                    <pre id="curlExample">curl -X POST http://HOST/TOKEN \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}' \
+  -o screenshot.png</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('screenshotForm');
+        const tokenInput = document.getElementById('token');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const screenshot = document.getElementById('screenshot');
+        const error = document.getElementById('error');
+        const apiUrl = document.getElementById('apiUrl');
+        const curlExample = document.getElementById('curlExample');
+
+        const savedToken = localStorage.getItem('webshot_token');
+        if (savedToken) {
+            tokenInput.value = savedToken;
+        }
+
+        function updateApiUrl() {
+            const token = tokenInput.value || 'your-token';
+            const baseUrl = `${window.location.protocol}//${window.location.host}/${token}`;
+            apiUrl.textContent = `POST ${baseUrl}`;
+            curlExample.textContent = `curl -X POST ${baseUrl} \\
+  -H "Content-Type: application/json" \\
+  -d '{"url":"https://example.com"}' \\
+  -o screenshot.png`;
+        }
+
+        tokenInput.addEventListener('input', updateApiUrl);
+        updateApiUrl();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = tokenInput.value.trim();
+            if (!token) {
+                showError('请输入 Token');
+                return;
+            }
+
+            const data = {
+                url: document.getElementById('url').value,
+                html: document.getElementById('html').value,
+                waitFor: parseInt(document.getElementById('waitFor').value),
+                device: document.getElementById('device').value,
+                trimColor: document.getElementById('trimColor').value
+            };
+
+            if (!data.url && !data.html) {
+                showError('请输入 URL 或 HTML 内容');
+                return;
+            }
+
+            loading.classList.add('show');
+            result.classList.remove('show');
+            error.classList.remove('show');
+
+            try {
+                const response = await fetch('/' + token, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`请求失败 (${response.status}): ${errorText}`);
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                screenshot.src = url;
+                result.classList.add('show');
+
+                localStorage.setItem('webshot_token', token);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
+            setTimeout(() => error.classList.remove('show'), 5000);
+        }
+    </script>
+</body>
+
+</html>
