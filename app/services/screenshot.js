@@ -1,4 +1,5 @@
 import { devices } from 'playwright';
+
 import { BrowserManager } from './browser-manager.js';
 import { ImageProcessor } from './image-processor.js';
 

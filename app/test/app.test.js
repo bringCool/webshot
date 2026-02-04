@@ -5,7 +5,6 @@ import { spawn } from 'child_process';
 
 const PORT = 3001;
 const TOKEN = 'test-token';
-const SERVER_URL = `http://localhost:${PORT}/${TOKEN}`;
 
 let server;
 
