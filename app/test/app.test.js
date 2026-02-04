@@ -154,7 +154,7 @@ describe('Screenshot API - Integration Tests', () => {
         });
     });
 
-    describe('HTML Screenshot', { skip: true }, () => {
+    describe('HTML Screenshot', () => {
         it('should capture screenshot from HTML', async () => {
             const html = '<html><body><h1>Test Page</h1></body></html>';
             const response = await postRequest({ html, waitFor: 1 });
@@ -182,7 +182,7 @@ describe('Screenshot API - Integration Tests', () => {
         });
     });
 
-    describe('URL Screenshot', { skip: true }, () => {
+    describe('URL Screenshot', () => {
         it('should capture screenshot from URL', async () => {
             const response = await postRequest({
                 url: 'https://example.com',
