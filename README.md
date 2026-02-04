@@ -129,7 +129,6 @@ web-screenshot/
 
 * ✅ Docker 沙盒隔离
 * ✅ 非 Privileged 模式
-* ✅ 网络隔离 (ipvlan)
 * ✅ Token 鉴权
 
 ## 注意事项
